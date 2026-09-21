@@ -1,0 +1,476 @@
+01 — HARDSKETCH CLI
+
+FULL-SCREEN HARDSKETCH CLI THEME.
+
+PURE MATTE BLACK BACKGROUND.
+
+Create an extremely detailed hand-drawn doodle environment across the entire black background.
+
+IMPORTANT:
+NO WORDS.
+NO LETTERS.
+NO NUMBERS.
+NO SENTENCES.
+NO LABELS.
+NO TYPOGRAPHY.
+NO UI TEXT IN THE BACKGROUND.
+
+Only visual objects, symbols, sketches and abstract technical marks.
+
+The background contains MANY DIFFERENT HAND-DRAWN TECHNICAL OBJECTS scattered organically across the canvas.
+
+Large sketches:
+old CRT computer,
+modern computer monitor,
+mechanical keyboard,
+computer mouse,
+server rack,
+desktop tower,
+laptop,
+terminal screen,
+hard disk,
+motherboard,
+computer chip,
+circuit board,
+network router,
+Ethernet connector,
+USB drive,
+cooling fan,
+computer cables,
+electrical panel.
+
+Medium sketches:
+CPU chip,
+RAM stick,
+power button,
+USB connector,
+Ethernet plug,
+headphones,
+microphone,
+camera,
+magnifying glass,
+padlock,
+key,
+antenna,
+signal symbol,
+warning triangle,
+gear,
+screwdriver,
+wrench,
+multimeter,
+electronic components.
+
+Small doodles:
+circuit traces,
+connection nodes,
+arrows,
+crosshair symbols,
+target marks,
+asterisk-like technical symbols,
+schematic shapes,
+dots,
+circles,
+tiny geometric diagrams,
+random electrical symbols,
+abstract circuit patterns,
+small gears,
+screws,
+bolts,
+wire loops.
+
+OBJECT SCALE:
+Some objects extremely large and partially cropped by the screen edges.
+Some medium-sized objects floating between them.
+Many tiny sketches filling empty spaces.
+
+Create strong DEPTH through scale variation.
+
+STYLE:
+rough white ink drawing,
+thick hand-drawn outlines,
+double-line sketching,
+broken strokes,
+dry marker texture,
+pencil construction lines,
+crosshatching,
+rough shading,
+white ink scratches,
+imperfect geometry,
+unfinished sketch marks.
+
+Every object should look individually hand-sketched.
+
+Use a few subtle DARK RED ink marks only as visual accents.
+
+The background should feel like an enormous technical sketchbook drawn with white marker on matte black paper.
+
+The center should remain slightly less crowded so a CLI interface can sit clearly above the artwork.
+
+NO realistic photographs.
+NO 3D renders.
+NO neon.
+NO glow.
+NO gradients.
+NO colorful objects.
+NO futuristic cyberpunk aesthetic.
+
+MATTE BLACK + WHITE INK + MINIMAL DARK RED.
+
+Brutalist.
+Industrial.
+Technical.
+Raw.
+Handmade.
+Underground engineering notebook aesthetic.
+
+16:9.
+Ultra-detailed.
+High contrast.
+Premium HARDSKETCH visual identity.
+
+
+
+
+
+
+
+
+02 — HARDSKETCH BOOK
+
+FULL-SCREEN HARDSKETCH BOOK THEME.
+
+PURE MATTE BLACK BACKGROUND.
+
+Create a huge hand-drawn literary sketch world covering the entire background.
+
+IMPORTANT:
+NO WORDS.
+NO LETTERS.
+NO NUMBERS.
+NO TITLES.
+NO LABELS.
+NO SENTENCES.
+NO TYPOGRAPHY.
+
+ONLY BOOKS, READING OBJECTS, PAPER OBJECTS AND LITERARY SYMBOLS.
+
+The background must contain MANY DIFFERENT TYPES OF BOOKS.
+
+Large sketches:
+large antique hardcover book,
+ancient leather-bound book,
+open manuscript,
+old encyclopedia,
+thick dictionary,
+ornamental Islamic manuscript,
+vintage novel,
+large academic textbook,
+old journal,
+open notebook,
+stack of books,
+ancient scroll,
+large open pages.
+
+Medium sketches:
+paperback book,
+small pocket book,
+spiral notebook,
+diary,
+sketchbook,
+poetry book,
+leather journal,
+hardcover novel,
+travel journal,
+old manuscript,
+book with bookmark,
+book with ribbon,
+closed book,
+half-open book,
+stack of three books,
+stack of five books.
+
+Small doodles:
+loose paper sheets,
+folded pages,
+bookmark ribbons,
+paper clips,
+ink bottle,
+fountain pen,
+quill,
+reading glasses,
+magnifying glass,
+feather,
+wax seal,
+paper scraps,
+book corners,
+torn pages,
+rolled parchment,
+small scrolls,
+ink splatters.
+
+BOOK VARIETY IS ESSENTIAL:
+Every book should have a different size, thickness, cover shape, spine design, page arrangement and perspective.
+
+Show:
+books standing vertically,
+books lying horizontally,
+books tilted,
+books stacked,
+books partially open,
+books viewed from the side,
+books viewed from above,
+books floating slightly,
+pages spreading outward.
+
+Some books should be extremely large and partially cropped by the screen edges.
+
+Some should be tiny background doodles.
+
+Use MASSIVE SCALE VARIATION:
+few giant books,
+many medium books,
+lots of tiny book sketches.
+
+Create overlapping compositions like a giant artist's notebook filled with literary drawings.
+
+STYLE:
+thick white hand-drawn ink,
+rough marker outlines,
+imperfect sketch strokes,
+double outlines,
+crosshatching,
+pencil construction lines,
+page shading,
+rough paper texture,
+white ink scratches,
+unfinished drawing marks,
+small decorative sketch strokes.
+
+Every book must look hand-drawn rather than digitally rendered.
+
+Use extremely limited DARK RED accents:
+bookmark ribbon,
+tiny wax seal,
+small decorative mark,
+or occasional page accent.
+
+NO gold.
+NO realistic photography.
+NO 3D book renders.
+NO glowing books.
+NO neon.
+NO gradients.
+NO colorful illustrations.
+NO text anywhere.
+
+The center should have enough visual breathing room for a book-selection interface.
+
+Overall appearance:
+AN ENORMOUS BLACK SKETCHBOOK
+FILLED WITH HUNDREDS OF DIFFERENT HAND-DRAWN BOOKS.
+
+Literary.
+Mysterious.
+Intellectual.
+Vintage.
+Brutalist.
+Artistic.
+Premium.
+
+MATTE BLACK + WHITE INK + MINIMAL DARK RED.
+
+16:9.
+Ultra-detailed HARDSKETCH aesthetic.
+
+
+
+
+
+
+
+
+
+03 — HARDSKETCH MIFTAH
+
+FULL-SCREEN HARDSKETCH MIFTAH THEME.
+
+PURE MATTE BLACK BACKGROUND.
+
+Create an enormous mysterious hand-drawn world of KEYS, LOCKS, DOORS and ISLAMIC GEOMETRIC ORNAMENTS.
+
+IMPORTANT:
+NO WORDS.
+NO LETTERS.
+NO NUMBERS.
+NO SENTENCES.
+NO LABELS.
+NO TYPOGRAPHY.
+
+ONLY SYMBOLIC OBJECTS AND HAND-DRAWN SKETCHES.
+
+MAIN VISUAL IDEA:
+MIFTAH IS REPRESENTED THROUGH THE SYMBOL OF THE KEY.
+
+Fill the background with MANY DIFFERENT TYPES OF HAND-DRAWN KEYS.
+
+Large key sketches:
+ancient iron key,
+ornamental antique key,
+large skeleton key,
+vintage brass key,
+long medieval key,
+ornate royal key,
+old wooden key,
+decorative Islamic-inspired key,
+large vintage door key,
+intricately patterned key,
+ancient mysterious key.
+
+Medium key sketches:
+small house key,
+padlock key,
+warded key,
+skeleton key,
+ornamental key,
+old cabinet key,
+tiny vintage key,
+modern key,
+decorative key,
+long thin key,
+round-headed key,
+cross-shaped key,
+ornamental double-sided key.
+
+Small key doodles:
+tiny keys,
+keyholes,
+key rings,
+broken keys,
+crossed keys,
+hanging keys,
+keys floating at different angles,
+keys partially hidden behind ornaments.
+
+LOCKS:
+old padlocks,
+ornamental locks,
+ancient locks,
+heavy iron locks,
+small cabinet locks,
+decorative circular locks,
+vintage door locks,
+intricate keyholes.
+
+DOORS AND GATES:
+large ancient wooden door,
+arched doorway,
+ornamental gate,
+old stone doorway,
+small door symbols,
+partially open doors,
+locked doors,
+door handles,
+keyholes.
+
+Use these elements symbolically:
+KEY → LOCK
+KEY → DOOR
+KEY → OPENING
+KEY → ACCESS
+
+ISLAMIC GEOMETRIC ELEMENTS:
+subtle hand-drawn eight-point geometric patterns,
+arabesque ornaments,
+interlocking geometric shapes,
+star patterns,
+arched architectural motifs,
+ornamental borders,
+mosque-inspired geometric details,
+manuscript-style decorative flourishes.
+
+Keep these as ABSTRACT ORNAMENTAL DRAWINGS.
+Do not include religious figures or depictions of people.
+
+COMPOSITION:
+A few HUGE keys should dominate the background.
+Some giant keys should extend beyond the screen edges.
+
+Hundreds of smaller keys should appear throughout the background.
+
+Mix:
+giant keys,
+medium locks,
+small keyholes,
+door arches,
+geometric ornaments,
+tiny decorative symbols.
+
+Create extreme SCALE VARIATION.
+
+Some objects should be partially cropped.
+Some should overlap.
+Some should appear faint and distant.
+Some should be bold and extremely thick.
+
+STYLE:
+rough white ink,
+thick marker outlines,
+hand-drawn imperfections,
+double sketch lines,
+crosshatching,
+engraving-style details,
+pencil construction marks,
+rough dry-brush texture,
+broken strokes,
+white ink scratches,
+unfinished sketch marks.
+
+Every key must have a DIFFERENT silhouette and design.
+
+Avoid repeating the same key shape.
+
+Use very limited DARK RED accents on:
+small keyhole,
+bookmark-like ribbon,
+tiny ornament,
+selected lock,
+or a few decorative strokes.
+
+NO GOLD.
+NO GLOW.
+NO NEON.
+NO GRADIENT.
+NO 3D RENDER.
+NO PHOTOGRAPHY.
+NO TEXT.
+NO PEOPLE.
+NO FACES.
+
+The center should remain slightly open and visually calmer so the MIFTAH Dua interface can be placed there.
+
+OVERALL FEEL:
+
+AN ANCIENT COLLECTION OF KEYS
+DRAWN BY HAND
+ON A BLACK MANUSCRIPT.
+
+Mysterious.
+Spiritual.
+Elegant.
+Symbolic.
+Quiet.
+Deep.
+Brutalist.
+Artistic.
+Premium.
+
+MATTE BLACK + WHITE INK + MINIMAL DARK RED.
+
+16:9.
+Ultra-detailed.
+Cinematic HARDSKETCH aesthetic.
+
+
+
+
+

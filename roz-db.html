@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROZ DB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cabin+Sketch:wght@400;700&family=Permanent+Marker&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#e9e4d9; --paper2:#ded7c8; --ink:#211d18; --ink-soft:#5b5348;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --paper:#15130f; --paper2:#1d1a15; --ink:#e8e1d2; --ink-soft:#b4ab9b; }
+  }
+  *{box-sizing:border-box;}
+  html,body{ margin:0; min-height:100%; background:var(--paper); }
+  body{
+    display:flex; align-items:center; justify-content:center;
+    min-height:100vh; padding:24px;
+    font-family:'Cabin Sketch', system-ui, sans-serif;
+    color:var(--ink);
+  }
+  .card{
+    width:100%; max-width:380px; text-align:center;
+    border:1.5px solid var(--ink); border-radius:4px;
+    padding:36px 28px; background:var(--paper2);
+    box-shadow:4px 4px 0 rgba(0,0,0,0.12);
+  }
+  .icon{ font-size:2.2rem; margin-bottom:6px; }
+  h1{
+    font-family:'Permanent Marker', cursive; font-weight:400;
+    font-size:1.6rem; margin:4px 0 20px; transform:rotate(-1.5deg);
+  }
+  input[type="password"]{
+    width:100%; padding:10px 12px; font-size:1rem;
+    border:1.4px solid var(--ink); border-radius:3px;
+    background:var(--paper); color:var(--ink);
+    font-family:inherit; margin-bottom:14px;
+  }
+  button{
+    width:100%; padding:11px; font-size:1rem; font-weight:700;
+    letter-spacing:0.05em; font-family:'Cabin Sketch', cursive;
+    border:1.4px solid var(--ink); border-radius:3px; cursor:pointer;
+    background:var(--ink); color:var(--paper);
+  }
+  button:active{ transform:scale(0.98); }
+  .error{
+    color:#a83232; font-size:0.85rem; margin-top:12px; min-height:1.2em;
+  }
+  .status{ font-size:0.85rem; color:var(--ink-soft); margin-top:12px; min-height:1.2em; }
+  @keyframes shake{
+    0%,100%{ transform:translateX(0); }
+    20%,60%{ transform:translateX(-6px); }
+    40%,80%{ transform:translateX(6px); }
+  }
+  .shake{ animation:shake 0.35s ease; }
+</style>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="icon">🔒</div>
+    <h1>ROZ DB</h1>
+    <form id="gate-form" autocomplete="off">
+      <input type="password" id="pw" placeholder="Enter password" required>
+      <button type="submit">Unlock</button>
+      <div class="error" id="error"></div>
+      <div class="status" id="status"></div>
+    </form>
+  </div>
+
+<script>
+  const STORED_HASH = "ca63c07ad35d8c9fb0c92d6146759b122d4ec5d3f67ebe2f30ddb69f9e6c9fd3bf31a5e408b08f1d4d9cd68120cced9e57f010bef3cde97653fed5470da7d1a0";
+  const TARGET_LINK = "https://r0z.netlify.app/";
+
+  async function sha512Hex(text){
+    const bytes = new TextEncoder().encode(text);
+    const digest = await crypto.subtle.digest('SHA-512', bytes);
+    return Array.from(new Uint8Array(digest))
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
+  }
+
+  const form = document.getElementById('gate-form');
+  const input = document.getElementById('pw');
+  const errorEl = document.getElementById('error');
+  const statusEl = document.getElementById('status');
+  const card = document.getElementById('card');
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    errorEl.textContent = '';
+    statusEl.textContent = 'Checking…';
+    const hash = await sha512Hex(input.value);
+    if (hash === STORED_HASH) {
+      statusEl.textContent = 'Unlocked — redirecting…';
+      window.location.href = TARGET_LINK;
+    } else {
+      statusEl.textContent = '';
+      errorEl.textContent = 'Wrong password, try again.';
+      input.value = '';
+      input.focus();
+      card.classList.remove('shake');
+      void card.offsetWidth;
+      card.classList.add('shake');
+    }
+  });
+</script>
+</body>
+</html>

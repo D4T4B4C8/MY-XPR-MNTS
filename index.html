@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Projects | Cinematic Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cabin+Sketch:wght@400;700&family=Permanent+Marker&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Cinematic Color Grade: Deep Teal & Warm Gold (Complementary) */
+    --paper: #080b0e;        /* Deep atmospheric void */
+    --paper2: #121820;       /* Mid-tone cinematic shadow */
+    --ink: #e8cfa6;          /* Magical/Epic gold lighting */
+    --ink-soft: #637887;     /* Moody slate blue/grey */
+    --line: #2a3845;         /* Subtle structural lines */
+    --circle-fill: #0d1218;  /* Core shadow */
+    --circle-icon: #ff9d00;  /* Intense cinematic highlight */
+    --glow: rgba(232, 207, 166, 0.4);
+    --shadow-deep: rgba(0, 0, 0, 0.85);
+    --bg-overlay: rgba(8, 11, 14, 0.88); /* Overlay to ensure text readability */
+  }
+
+  * { box-sizing: border-box; }
+
+  html {
+    /* Magnetic paging is handled in JS, native smooth-scroll would fight it */
+    scroll-behavior: auto;
+    overscroll-behavior: none;
+  }
+
+  html, body {
+    margin: 0;
+    min-height: 100%;
+    background-color: var(--paper);
+  }
+
+  body {
+    /* 35mm Film Grain + Atmospheric Lighting */
+    background-image:
+      radial-gradient(ellipse 1200px 800px at 50% -10%, rgba(25, 45, 60, 0.4), transparent 70%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='matrix' values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.08 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-blend-mode: screen, overlay;
+    color: var(--ink);
+    font-family: 'Cabin Sketch', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Cinematic Vignette Post-Processing */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background: radial-gradient(circle at 50% 50%, transparent 50%, rgba(0, 0, 0, 0.9) 150%);
+    mix-blend-mode: multiply;
+  }
+
+  /* ---- Fixed Notebook Frame ---- */
+  .page-frame {
+    position: fixed;
+    inset: 18px;
+    border: 1px solid rgba(232, 207, 166, 0.15);
+    box-shadow: inset 0 0 40px rgba(0,0,0,0.5);
+    pointer-events: none;
+    z-index: 100;
+    transition: all 0.5s ease;
+  }
+  .tick { position: absolute; width: 16px; height: 16px; }
+  .tick::before, .tick::after { content: ""; position: absolute; background: var(--ink); box-shadow: 0 0 5px var(--glow); }
+  .tick::before { width: 100%; height: 1px; top: 50%; left: 0; transform: translateY(-50%); }
+  .tick::after { height: 100%; width: 1px; left: 50%; top: 0; transform: translateX(-50%); }
+  .tick.tl { top: -8px; left: -8px; }
+  .tick.tr { top: -8px; right: -8px; }
+  .tick.bl { bottom: -8px; left: -8px; }
+  .tick.br { bottom: -8px; right: -8px; }
+
+  /* Shot on V-Raptor XL HUD vibes */
+  .corner-label {
+    position: fixed;
+    z-index: 101;
+    font-family: ui-monospace, 'Courier New', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    text-shadow: 0 2px 4px var(--shadow-deep);
+    pointer-events: none;
+  }
+  .corner-label.top-left { top: 32px; left: 34px; }
+  .corner-label.top-right { top: 60px; right: 34px; text-align: right; }
+  .corner-label.bottom-left { bottom: 28px; left: 34px; display: flex; align-items: baseline; gap: 8px; }
+  .corner-label.bottom-left .plus { font-size: 1rem; color: var(--circle-icon); text-shadow: 0 0 8px var(--circle-icon); }
+
+  /* Progress dots */
+  .page-dots {
+    position: fixed;
+    right: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 101;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .page-dots .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    border: 1px solid var(--ink-soft);
+    background: transparent;
+    transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 0 0 0 rgba(0,0,0,0);
+  }
+  .page-dots .dot.active {
+    background: var(--circle-icon);
+    border-color: var(--circle-icon);
+    transform: scale(1.6);
+    box-shadow: 0 0 10px var(--circle-icon);
+  }
+  @media (max-width: 700px) { .page-dots { display: none; } }
+
+  /* ================= Diary Stack (Matte Painting Depth) ================= */
+  .diary-stack { position: relative; }
+
+  .page {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh; /* exact fit on phones with moving address bars */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--paper);
+    /* Epic lighting gradient per page */
+    background-image: radial-gradient(circle at 50% -20%, rgba(20, 30, 40, 0.6), transparent 80%);
+    overflow: hidden;
+    /* Deep dramatic drop shadows for overlapping elements */
+    box-shadow: 0 -40px 80px -20px rgba(0,0,0,1), 0 -2px 5px rgba(232, 207, 166, 0.05);
+  }
+  
+  .hero-page { box-shadow: none; background-image: none; }
+
+  /* -------- Individual Project Backgrounds -------- */
+  .project-page {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  
+  /* Images mapped to local directory filenames */
+  #page-cli { background-image: linear-gradient(var(--bg-overlay), var(--paper)), url('cli.png'); }
+  #page-book { background-image: linear-gradient(var(--bg-overlay), var(--paper)), url('book.png'); }
+  #page-miftha { background-image: linear-gradient(var(--bg-overlay), var(--paper)), url('miftaah.png'); }
+  #page-roz-db { background-image: linear-gradient(var(--bg-overlay), var(--paper)), url('rz_db.png'); }
+  #page-cmp-db { background-image: linear-gradient(var(--bg-overlay), var(--paper)), url('cmp_db.png'); }
+  #page-biometric { background-image: linear-gradient(var(--bg-overlay), var(--paper)), url('biomatric.png'); }
+  #page-daily-ledger { background-image: linear-gradient(var(--bg-overlay), var(--paper)), url('daily_ledger.png'); }
+  #page-selling-books { background-image: linear-gradient(var(--bg-overlay), var(--paper)), url('selling_book.png'); }
+
+  .page:nth-of-type(1) { z-index: 1; }
+  .page:nth-of-type(2) { z-index: 2; }
+  .page:nth-of-type(3) { z-index: 3; }
+  .page:nth-of-type(4) { z-index: 4; }
+  .page:nth-of-type(5) { z-index: 5; }
+  .page:nth-of-type(6) { z-index: 6; }
+  .page:nth-of-type(7) { z-index: 7; }
+  .page:nth-of-type(8) { z-index: 8; }
+  .page:nth-of-type(9) { z-index: 9; }
+
+  .page-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 640px;
+    padding: 0 32px;
+    opacity: 0;
+    transform: translateY(60px) scale(0.95);
+    transition: opacity 1.2s cubic-bezier(0.19, 1, 0.22, 1), transform 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  .page.in-view .page-inner {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  /* ---------------- Hero Page (Masterpiece Epic) ---------------- */
+  .compass { 
+    width: 90px; height: 90px; margin-bottom: 20px; 
+    filter: drop-shadow(0 0 15px var(--glow));
+  }
+  .compass path, .compass circle { stroke: var(--ink); }
+  .compass .dot { stroke: none; fill: var(--circle-icon); }
+
+  h1.title {
+    font-family: 'Permanent Marker', cursive;
+    font-weight: 400;
+    font-size: clamp(3rem, 10vw, 5rem);
+    text-align: center;
+    margin: 6px 0 2px;
+    transform: rotate(-2deg);
+    letter-spacing: 0.03em;
+    color: var(--ink);
+    /* Luminous text effect */
+    text-shadow: 3px 3px 10px rgba(0,0,0,0.8), 0 0 25px rgba(232, 207, 166, 0.2);
+  }
+  .swash { 
+    width: min(380px, 85%); height: 38px; margin-bottom: 12px; 
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6));
+  }
+  .swash path { stroke: var(--ink); fill: none; }
+
+  .ornament { width: 34px; height: 34px; margin: 26px 0; opacity: 0.9; }
+  .ornament.small { width: 24px; height: 24px; margin: 30px 0 10px; }
+  .ornament circle { filter: drop-shadow(0 0 5px var(--circle-icon)); }
+
+  .scroll-cue {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    font-family: ui-monospace, 'Courier New', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+  }
+  .scroll-cue svg { width: 18px; height: 26px; animation: cinematic-bob 2.5s ease-in-out infinite; }
+  @keyframes cinematic-bob {
+    0%, 100% { transform: translateY(0); opacity: 0.3; filter: drop-shadow(0 0 0 transparent); }
+    50% { transform: translateY(10px); opacity: 1; filter: drop-shadow(0 0 8px var(--ink)); }
+  }
+
+  /* ---------------- Project Pages ---------------- */
+  .page-kicker {
+    font-family: ui-monospace, 'Courier New', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.4em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    text-shadow: 0 2px 5px var(--shadow-deep);
+  }
+
+  .proj-btn {
+    position: relative;
+    width: 100%;
+    max-width: 460px;
+    background: none;
+    border: none;
+    padding: 24px 34px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    cursor: pointer;
+    font-family: 'Cabin Sketch', cursive;
+    color: var(--ink);
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.4s ease;
+  }
+  
+  /* Intricate Detail Outline */
+  .btn-outline {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: visible;
+    filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6));
+  }
+  .btn-outline polygon:nth-child(1) { fill: var(--paper2); stroke: var(--ink); stroke-width: 2; transition: all 0.4s ease; }
+  .btn-outline polygon:nth-child(2) { fill: none; stroke: var(--circle-icon); stroke-width: 1; opacity: 0.3; transition: all 0.4s ease; }
+
+  .icon-circle { flex: 0 0 auto; width: 56px; height: 56px; }
+  .icon-circle circle { fill: var(--circle-fill); stroke: var(--ink); stroke-width: 1.8; transition: all 0.4s ease; }
+  .icon-circle .glyph { fill: var(--circle-icon); stroke: none; transition: all 0.4s ease; }
+  .icon-circle text.glyph { font-family: ui-monospace, 'Courier New', monospace; font-weight: 700; text-shadow: 0 0 10px rgba(255,157,0,0.5); }
+  .icon-circle .glyph-stroke { fill: none; stroke: var(--circle-icon); stroke-width: 2.2; filter: drop-shadow(0 0 4px rgba(255,157,0,0.6)); }
+  .icon-circle .glyph-stroke-thin { fill: none; stroke: var(--circle-icon); stroke-width: 1.6; }
+
+  .label {
+    flex: 1;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    transition: text-shadow 0.4s ease;
+  }
+  .arrow {
+    flex: 0 0 auto;
+    font-size: 1.4rem;
+    color: var(--circle-icon);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s ease;
+  }
+
+  /* Hover States (Stunning Cinematic Lighting) */
+  .proj-btn:hover, .proj-btn:focus-visible { 
+    transform: rotate(-0.8deg) scale(1.03); 
+    outline: none;
+  }
+  .proj-btn:hover .btn-outline polygon:nth-child(1),
+  .proj-btn:focus-visible .btn-outline polygon:nth-child(1) {
+    fill: #1a2430;
+    stroke: var(--circle-icon);
+    filter: drop-shadow(0 0 15px rgba(255,157,0,0.3));
+  }
+  .proj-btn:hover .btn-outline polygon:nth-child(2) { opacity: 0.8; stroke-width: 2px; }
+  .proj-btn:hover .arrow, .proj-btn:focus-visible .arrow { 
+    transform: translateX(10px) scale(1.2); 
+    filter: drop-shadow(0 0 8px var(--circle-icon));
+  }
+  .proj-btn:hover .label { text-shadow: 0 0 15px var(--glow); }
+  .proj-btn:hover .icon-circle circle { stroke: var(--circle-icon); fill: #111820; box-shadow: inset 0 0 15px rgba(255,157,0,0.2); }
+  
+  .proj-btn:active { transform: scale(0.96); }
+  .page-btn { transform: scale(1.15); margin: 20px 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .arrow, .proj-btn, html { transition: none !important; scroll-behavior: auto !important; }
+    .scroll-cue svg { animation: none !important; }
+    .page-inner { transition: none !important; opacity: 1 !important; transform: none !important; }
+  }
+
+  @media (max-width: 560px) {
+    .corner-label.top-left, .corner-label.top-right { font-size: 0.55rem; }
+    .label { font-size: 1.2rem; letter-spacing: 0.12em; }
+    .icon-circle { width: 48px; height: 48px; }
+    .page-btn { transform: scale(1); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Hard Sketch filters smoothed slightly for "Matte Painting" aesthetic -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="pencil1" x="-30%" y="-30%" width="160%" height="160%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" seed="7" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="pencil2" x="-30%" y="-30%" width="160%" height="160%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="3" seed="21" result="noise2"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise2" scale="1.8" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+</svg>
+
+<div class="page-frame">
+  <span class="tick tl"></span><span class="tick tr"></span>
+  <span class="tick bl"></span><span class="tick br"></span>
+</div>
+
+<div class="corner-label top-left">IDEAS / CODE / BOOKS / MIFTHA</div>
+<div class="corner-label top-right">BUILD BETTER<br>THAN YESTERDAY</div>
+<div class="corner-label bottom-left"><span class="plus">+</span><span>SMALL STEPS<br>BIG DREAMS</span></div>
+
+<div class="page-dots" aria-hidden="true">
+  <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+  <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+</div>
+
+<div class="diary-stack">
+
+  <!-- ============ PAGE 0 : HERO ============ -->
+  <section class="page hero-page">
+    <div class="page-inner">
+      <svg class="compass" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="70" cy="70" r="46" stroke-width="1.2" filter="url(#pencil2)"/>
+        <path filter="url(#pencil1)" stroke-width="2" fill="none"
+          d="M70,14 C72,42 76,64 98,66 C76,68 72,90 70,126 C68,90 64,68 42,66 C64,64 68,42 70,14 Z"/>
+        <path filter="url(#pencil2)" stroke-width="1.2" fill="none" opacity="0.6"
+          d="M70,32 C71,48 75,58 92,60 C75,62 71,72 70,108 C69,72 65,62 48,60 C65,58 69,48 70,32 Z"
+          transform="rotate(45 70 70)"/>
+        <circle class="dot" cx="70" cy="70" r="3.5"/>
+      </svg>
+
+      <h1 class="title">MY PROJECTS</h1>
+      <svg class="swash" viewBox="0 0 400 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10,20 C90,8 210,30 392,12" stroke-width="4.5" stroke-linecap="round" filter="url(#pencil1)"/>
+        <path d="M24,30 C110,25 190,34 268,27" stroke-width="2.4" stroke-linecap="round" opacity="0.7" filter="url(#pencil2)"/>
+      </svg>
+
+      <svg class="ornament" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g stroke="var(--ink)" stroke-width="1.8" filter="url(#pencil1)">
+          <path d="M4,20 L36,20"/>
+          <path d="M12,6.5 L28,33.5"/>
+          <path d="M28,6.5 L12,33.5"/>
+        </g>
+        <circle cx="20" cy="20" r="2" fill="var(--circle-icon)" stroke="none"/>
+      </svg>
+
+      <div class="scroll-cue">
+        <span>scroll</span>
+        <svg viewBox="0 0 16 22" fill="none"><path d="M8,1 V19 M2,13 L8,20 L14,13" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 1 : CLI ============ -->
+  <section class="page project-page" id="page-cli">
+    <div class="page-inner">
+      <div class="page-kicker">PAGE 01</div>
+      <button class="proj-btn page-btn" type="button" data-url="https://wx-cli.netlify.app/" aria-label="Open CLI project">
+        <svg class="btn-outline" viewBox="0 0 430 92" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="18,4 412,4 428,46 412,88 18,88 2,46" filter="url(#pencil1)"/>
+          <polygon points="14,8 416,7 424,46 416,85 14,84 6,46" filter="url(#pencil2)"/>
+        </svg>
+        <span class="icon-circle" aria-hidden="true">
+          <svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" filter="url(#pencil1)"/>
+            <text class="glyph" x="30" y="38" font-size="21" text-anchor="middle">&gt;_</text>
+          </svg>
+        </span>
+        <span class="label">CLI</span>
+        <span class="arrow" aria-hidden="true">&rarr;</span>
+      </button>
+      <svg class="ornament small" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g stroke="var(--ink)" stroke-width="1.6" filter="url(#pencil2)">
+          <path d="M4,20 L36,20"/><path d="M12,6.5 L28,33.5"/><path d="M28,6.5 L12,33.5"/>
+        </g>
+        <circle cx="20" cy="20" r="1.6" fill="var(--circle-icon)" stroke="none"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 2 : BOOK ============ -->
+  <section class="page project-page" id="page-book">
+    <div class="page-inner">
+      <div class="page-kicker">PAGE 02</div>
+      <button class="proj-btn page-btn" type="button" data-url="https://b000k.netlify.app/" aria-label="Open BOOK project">
+        <svg class="btn-outline" viewBox="0 0 430 92" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="18,4 412,4 428,46 412,88 18,88 2,46" filter="url(#pencil2)"/>
+          <polygon points="14,7 416,8 424,46 416,84 14,85 6,46" filter="url(#pencil1)"/>
+        </svg>
+        <span class="icon-circle" aria-hidden="true">
+          <svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" filter="url(#pencil2)"/>
+            <path class="glyph-stroke"
+              d="M12,22 C20,18 26,19 30,23 C34,19 40,18 48,22 L48,40 C40,36 34,37 30,41 C26,37 20,36 12,40 Z"/>
+            <path class="glyph-stroke-thin" d="M30,23 L30,41"/>
+          </svg>
+        </span>
+        <span class="label">BOOK</span>
+        <span class="arrow" aria-hidden="true">&rarr;</span>
+      </button>
+      <svg class="ornament small" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g stroke="var(--ink)" stroke-width="1.6" filter="url(#pencil2)">
+          <path d="M4,20 L36,20"/><path d="M12,6.5 L28,33.5"/><path d="M28,6.5 L12,33.5"/>
+        </g>
+        <circle cx="20" cy="20" r="1.6" fill="var(--circle-icon)" stroke="none"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 3 : MIFTHA ============ -->
+  <section class="page project-page" id="page-miftha">
+    <div class="page-inner">
+      <div class="page-kicker">PAGE 03</div>
+      <button class="proj-btn page-btn" type="button" data-url="https://mift44h.netlify.app/" aria-label="Open MIFTHA project">
+        <svg class="btn-outline" viewBox="0 0 430 92" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="18,4 412,4 428,46 412,88 18,88 2,46" filter="url(#pencil1)"/>
+          <polygon points="14,8 416,6 424,46 416,85 14,84 6,46" filter="url(#pencil2)"/>
+        </svg>
+        <span class="icon-circle" aria-hidden="true">
+          <svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" filter="url(#pencil1)"/>
+            <path class="glyph" stroke="none"
+              d="M30,12 C31,22 38,29 48,30 C38,31 31,38 30,48 C29,38 22,31 12,30 C22,29 29,22 30,12 Z"/>
+          </svg>
+        </span>
+        <span class="label">MIFTHA</span>
+        <span class="arrow" aria-hidden="true">&rarr;</span>
+      </button>
+      <svg class="ornament small" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g stroke="var(--ink)" stroke-width="1.6" filter="url(#pencil2)">
+          <path d="M4,20 L36,20"/><path d="M12,6.5 L28,33.5"/><path d="M28,6.5 L12,33.5"/>
+        </g>
+        <circle cx="20" cy="20" r="1.6" fill="var(--circle-icon)" stroke="none"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 4 : ROZ DB ============ -->
+  <section class="page project-page" id="page-roz-db">
+    <div class="page-inner">
+      <div class="page-kicker">PAGE 04</div>
+      <button class="proj-btn page-btn" type="button" data-url="roz-db.html" aria-label="Open ROZ DB project">
+        <svg class="btn-outline" viewBox="0 0 430 92" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="18,4 412,4 428,46 412,88 18,88 2,46" filter="url(#pencil1)"/>
+          <polygon points="14,8 416,7 424,46 416,85 14,84 6,46" filter="url(#pencil2)"/>
+        </svg>
+        <span class="icon-circle" aria-hidden="true">
+          <svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" filter="url(#pencil1)"/>
+            <text class="glyph" x="30" y="38" font-size="21" text-anchor="middle">R</text>
+          </svg>
+        </span>
+        <span class="label">ROZ DB</span>
+        <span class="arrow" aria-hidden="true">&rarr;</span>
+      </button>
+      <svg class="ornament small" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g stroke="var(--ink)" stroke-width="1.6" filter="url(#pencil2)">
+          <path d="M4,20 L36,20"/><path d="M12,6.5 L28,33.5"/><path d="M28,6.5 L12,33.5"/>
+        </g>
+        <circle cx="20" cy="20" r="1.6" fill="var(--circle-icon)" stroke="none"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 5 : CMP DB ============ -->
+  <section class="page project-page" id="page-cmp-db">
+    <div class="page-inner">
+      <div class="page-kicker">PAGE 05</div>
+      <button class="proj-btn page-btn" type="button" data-url="cmp-db.html" aria-label="Open CMP DB project">
+        <svg class="btn-outline" viewBox="0 0 430 92" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="18,4 412,4 428,46 412,88 18,88 2,46" filter="url(#pencil1)"/>
+          <polygon points="14,8 416,7 424,46 416,85 14,84 6,46" filter="url(#pencil2)"/>
+        </svg>
+        <span class="icon-circle" aria-hidden="true">
+          <svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" filter="url(#pencil1)"/>
+            <text class="glyph" x="30" y="38" font-size="21" text-anchor="middle">C</text>
+          </svg>
+        </span>
+        <span class="label">CMP DB</span>
+        <span class="arrow" aria-hidden="true">&rarr;</span>
+      </button>
+      <svg class="ornament small" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g stroke="var(--ink)" stroke-width="1.6" filter="url(#pencil2)">
+          <path d="M4,20 L36,20"/><path d="M12,6.5 L28,33.5"/><path d="M28,6.5 L12,33.5"/>
+        </g>
+        <circle cx="20" cy="20" r="1.6" fill="var(--circle-icon)" stroke="none"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 6 : BIOMETRIC ============ -->
+  <section class="page project-page" id="page-biometric">
+    <div class="page-inner">
+      <div class="page-kicker">PAGE 06</div>
+      <button class="proj-btn page-btn" type="button" data-url="biometric.html" aria-label="Open BIOMETRIC project">
+        <svg class="btn-outline" viewBox="0 0 430 92" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="18,4 412,4 428,46 412,88 18,88 2,46" filter="url(#pencil1)"/>
+          <polygon points="14,8 416,7 424,46 416,85 14,84 6,46" filter="url(#pencil2)"/>
+        </svg>
+        <span class="icon-circle" aria-hidden="true">
+          <svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" filter="url(#pencil1)"/>
+            <text class="glyph" x="30" y="38" font-size="21" text-anchor="middle">B</text>
+          </svg>
+        </span>
+        <span class="label">BIOMETRIC</span>
+        <span class="arrow" aria-hidden="true">&rarr;</span>
+      </button>
+      <svg class="ornament small" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g stroke="var(--ink)" stroke-width="1.6" filter="url(#pencil2)">
+          <path d="M4,20 L36,20"/><path d="M12,6.5 L28,33.5"/><path d="M28,6.5 L12,33.5"/>
+        </g>
+        <circle cx="20" cy="20" r="1.6" fill="var(--circle-icon)" stroke="none"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 7 : DAILY LEDGER ============ -->
+  <section class="page project-page" id="page-daily-ledger">
+    <div class="page-inner">
+      <div class="page-kicker">PAGE 07</div>
+      <button class="proj-btn page-btn" type="button" data-url="daily-ledger.html" aria-label="Open DAILY LEDGER project">
+        <svg class="btn-outline" viewBox="0 0 430 92" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="18,4 412,4 428,46 412,88 18,88 2,46" filter="url(#pencil1)"/>
+          <polygon points="14,8 416,7 424,46 416,85 14,84 6,46" filter="url(#pencil2)"/>
+        </svg>
+        <span class="icon-circle" aria-hidden="true">
+          <svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" filter="url(#pencil1)"/>
+            <text class="glyph" x="30" y="38" font-size="21" text-anchor="middle">D</text>
+          </svg>
+        </span>
+        <span class="label">DAILY LEDGER</span>
+        <span class="arrow" aria-hidden="true">&rarr;</span>
+      </button>
+      <svg class="ornament small" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g stroke="var(--ink)" stroke-width="1.6" filter="url(#pencil2)">
+          <path d="M4,20 L36,20"/><path d="M12,6.5 L28,33.5"/><path d="M28,6.5 L12,33.5"/>
+        </g>
+        <circle cx="20" cy="20" r="1.6" fill="var(--circle-icon)" stroke="none"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 8 : SELLING BOOKS ============ -->
+  <section class="page project-page" id="page-selling-books">
+    <div class="page-inner">
+      <div class="page-kicker">PAGE 08</div>
+      <button class="proj-btn page-btn" type="button" data-url="selling-books.html" aria-label="Open SELLING BOOKS project">
+        <svg class="btn-outline" viewBox="0 0 430 92" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="18,4 412,4 428,46 412,88 18,88 2,46" filter="url(#pencil1)"/>
+          <polygon points="14,8 416,7 424,46 416,85 14,84 6,46" filter="url(#pencil2)"/>
+        </svg>
+        <span class="icon-circle" aria-hidden="true">
+          <svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" filter="url(#pencil1)"/>
+            <text class="glyph" x="30" y="38" font-size="21" text-anchor="middle">S</text>
+          </svg>
+        </span>
+        <span class="label">SELLING BOOKS</span>
+        <span class="arrow" aria-hidden="true">&rarr;</span>
+      </button>
+      <svg class="ornament small" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g stroke="var(--ink)" stroke-width="1.6" filter="url(#pencil2)">
+          <path d="M4,20 L36,20"/><path d="M12,6.5 L28,33.5"/><path d="M28,6.5 L12,33.5"/>
+        </g>
+        <circle cx="20" cy="20" r="1.6" fill="var(--circle-icon)" stroke="none"/>
+      </svg>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  document.querySelectorAll('.proj-btn').forEach(function(btn){
+    function openUrl(){
+      var url = btn.getAttribute('data-url');
+      if(url){ window.open(url, '_blank', 'noopener'); }
+    }
+    btn.addEventListener('click', openUrl);
+    btn.addEventListener('keyup', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ openUrl(); }
+    });
+  });
+
+  var pages = Array.prototype.slice.call(document.querySelectorAll('.page'));
+  var dots = Array.prototype.slice.call(document.querySelectorAll('.page-dots .dot'));
+
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      var idx = pages.indexOf(entry.target);
+      if(entry.isIntersecting){
+        entry.target.classList.add('in-view');
+        if(dots[idx]){
+          dots.forEach(function(d){ d.classList.remove('active'); });
+          dots[idx].classList.add('active');
+        }
+      }
+    });
+  }, { threshold: 0.6 });
+
+  pages.forEach(function(p){ io.observe(p); });
+
+  /* =====================================================
+     MAGNETIC PAGE SNAP
+     A small scroll/swipe/key press "pulls" the view to the
+     next (or previous) page and locks it exactly on screen.
+     ===================================================== */
+  (function(){
+    var DURATION   = 850;   // ms, how long the pull takes
+    var MIN_WHEEL  = 4;     // tiny wheel movement is enough to trigger
+    var MIN_SWIPE  = 30;    // px finger swipe needed on touch screens
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var current = 0, animating = false, needQuiet = false;
+    var lastWheelTime = 0, touchStartY = null, settleTimer = null;
+
+    function pageH(){ return pages[0].offsetHeight || window.innerHeight; }
+    function targetFor(i){ return i * pageH(); }
+    function nearest(){
+      return Math.max(0, Math.min(pages.length - 1, Math.round(window.pageYOffset / pageH())));
+    }
+    function ease(t){ return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2; } // easeInOutCubic
+
+    function goTo(i){
+      i = Math.max(0, Math.min(pages.length - 1, i));
+      current = i;
+      var from = window.pageYOffset, to = targetFor(i), dist = to - from;
+      if(Math.abs(dist) < 1){ needQuiet = true; return; }
+      if(reduce){ window.scrollTo(0, to); needQuiet = true; return; }
+
+      animating = true;
+      var start = null;
+      function step(ts){
+        if(start === null) start = ts;
+        var t = Math.min(1, (ts - start) / DURATION);
+        window.scrollTo(0, from + dist * ease(t));
+        if(t < 1){ requestAnimationFrame(step); }
+        else { window.scrollTo(0, to); animating = false; needQuiet = true; }
+      }
+      requestAnimationFrame(step);
+    }
+
+    // Mouse wheel / trackpad
+    window.addEventListener('wheel', function(e){
+      e.preventDefault();
+      var now = performance.now();
+      var gap = now - lastWheelTime;
+      lastWheelTime = now;
+      if(animating) return;
+      // After a snap, ignore trackpad "momentum" until the wheel goes quiet
+      if(needQuiet){
+        if(gap > 120){ needQuiet = false; } else { return; }
+      }
+      if(Math.abs(e.deltaY) < MIN_WHEEL) return;
+      goTo(current + (e.deltaY > 0 ? 1 : -1));
+    }, { passive: false });
+
+    // Touch swipe
+    window.addEventListener('touchstart', function(e){
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+    window.addEventListener('touchmove', function(e){
+      e.preventDefault(); // we drive the scrolling ourselves
+      if(touchStartY === null || animating) return;
+      var diff = touchStartY - e.touches[0].clientY;
+      if(Math.abs(diff) >= MIN_SWIPE){
+        touchStartY = null;
+        goTo(current + (diff > 0 ? 1 : -1));
+      }
+    }, { passive: false });
+    window.addEventListener('touchend', function(){ touchStartY = null; }, { passive: true });
+
+    // Keyboard
+    window.addEventListener('keydown', function(e){
+      var k = e.key, dir = 0;
+      if(k === 'ArrowDown' || k === 'PageDown') dir = 1;
+      else if(k === 'ArrowUp' || k === 'PageUp') dir = -1;
+      else if(k === 'Home'){ e.preventDefault(); if(!animating) goTo(0); return; }
+      else if(k === 'End'){ e.preventDefault(); if(!animating) goTo(pages.length - 1); return; }
+      else return;
+      e.preventDefault();
+      if(!animating) goTo(current + dir);
+    });
+
+    // Safety net: if the page ever rests between two pages
+    // (scrollbar drag, etc.) the magnet pulls it to the nearest one.
+    window.addEventListener('scroll', function(){
+      if(animating) return;
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(function(){
+        if(animating) return;
+        var n = nearest();
+        if(Math.abs(window.pageYOffset - targetFor(n)) > 1) goTo(n);
+        else current = n;
+      }, 140);
+    }, { passive: true });
+
+    // Keep perfectly fitted when the window is resized / phone rotated
+    window.addEventListener('resize', function(){
+      window.scrollTo(0, targetFor(current));
+    });
+
+    // Start on whichever page the browser restored
+    current = nearest();
+    window.scrollTo(0, targetFor(current));
+  })();
+</script>
+
+</body>
+</html>
