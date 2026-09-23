@@ -25,9 +25,7 @@
   * { box-sizing: border-box; }
 
   html {
-    /* Magnetic paging is handled in JS, native smooth-scroll would fight it */
-    scroll-behavior: auto;
-    overscroll-behavior: none;
+    scroll-behavior: smooth;
   }
 
   html, body {
@@ -129,7 +127,6 @@
     position: sticky;
     top: 0;
     height: 100vh;
-    height: 100dvh; /* exact fit on phones with moving address bars */
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -162,7 +159,6 @@
   #page-daily-ledger { background-image: linear-gradient(var(--bg-overlay), var(--paper)), url('daily_ledger.png'); }
   #page-selling-books { background-image: linear-gradient(var(--bg-overlay), var(--paper)), url('selling_book.png'); }
 
-  #page-wx-forensics { background-image: linear-gradient(var(--bg-overlay), var(--paper)), url('forensics.png'); }
   .page:nth-of-type(1) { z-index: 1; }
   .page:nth-of-type(2) { z-index: 2; }
   .page:nth-of-type(3) { z-index: 3; }
@@ -173,7 +169,6 @@
   .page:nth-of-type(8) { z-index: 8; }
   .page:nth-of-type(9) { z-index: 9; }
 
-  .page:nth-of-type(10) { z-index: 10; }
   .page-inner {
     display: flex;
     flex-direction: column;
@@ -367,7 +362,6 @@
 <div class="page-dots" aria-hidden="true">
   <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
   <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
-  <span class="dot"></span>
 </div>
 
 <div class="diary-stack">
@@ -618,32 +612,6 @@
     </div>
   </section>
 
-  <!-- ============ PAGE 09 : WX-FORENSICS ============ -->
-  <section class="page project-page" id="page-wx-forensics">
-    <div class="page-inner">
-      <div class="page-kicker">PAGE 09</div>
-      <button class="proj-btn page-btn" type="button" data-url="wx-forensics.html" aria-label="Open WX-FORENSICS project">
-        <svg class="btn-outline" viewBox="0 0 430 92" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <polygon points="18,4 412,4 428,46 412,88 18,88 2,46" filter="url(#pencil1)"/>
-          <polygon points="14,8 416,7 424,46 416,85 14,84 6,46" filter="url(#pencil2)"/>
-        </svg>
-        <span class="icon-circle" aria-hidden="true">
-          <svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" filter="url(#pencil1)"/>
-            <text class="glyph" x="30" y="38" font-size="21" text-anchor="middle">W</text>
-          </svg>
-        </span>
-        <span class="label">WX-FORENSICS</span>
-        <span class="arrow" aria-hidden="true">&rarr;</span>
-      </button>
-      <svg class="ornament small" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <g stroke="var(--ink)" stroke-width="1.6" filter="url(#pencil2)">
-          <path d="M4,20 L36,20"/><path d="M12,6.5 L28,33.5"/><path d="M28,6.5 L12,33.5"/>
-        </g>
-        <circle cx="20" cy="20" r="1.6" fill="var(--circle-icon)" stroke="none"/>
-      </svg>
-    </div>
-  </section>
-
 </div>
 
 <script>
@@ -675,111 +643,6 @@
   }, { threshold: 0.6 });
 
   pages.forEach(function(p){ io.observe(p); });
-
-  /* =====================================================
-     MAGNETIC PAGE SNAP
-     A small scroll/swipe/key press "pulls" the view to the
-     next (or previous) page and locks it exactly on screen.
-     ===================================================== */
-  (function(){
-    var DURATION   = 850;   // ms, how long the pull takes
-    var MIN_WHEEL  = 4;     // tiny wheel movement is enough to trigger
-    var MIN_SWIPE  = 30;    // px finger swipe needed on touch screens
-    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    var current = 0, animating = false, needQuiet = false;
-    var lastWheelTime = 0, touchStartY = null, settleTimer = null;
-
-    function pageH(){ return pages[0].offsetHeight || window.innerHeight; }
-    function targetFor(i){ return i * pageH(); }
-    function nearest(){
-      return Math.max(0, Math.min(pages.length - 1, Math.round(window.pageYOffset / pageH())));
-    }
-    function ease(t){ return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2; } // easeInOutCubic
-
-    function goTo(i){
-      i = Math.max(0, Math.min(pages.length - 1, i));
-      current = i;
-      var from = window.pageYOffset, to = targetFor(i), dist = to - from;
-      if(Math.abs(dist) < 1){ needQuiet = true; return; }
-      if(reduce){ window.scrollTo(0, to); needQuiet = true; return; }
-
-      animating = true;
-      var start = null;
-      function step(ts){
-        if(start === null) start = ts;
-        var t = Math.min(1, (ts - start) / DURATION);
-        window.scrollTo(0, from + dist * ease(t));
-        if(t < 1){ requestAnimationFrame(step); }
-        else { window.scrollTo(0, to); animating = false; needQuiet = true; }
-      }
-      requestAnimationFrame(step);
-    }
-
-    // Mouse wheel / trackpad
-    window.addEventListener('wheel', function(e){
-      e.preventDefault();
-      var now = performance.now();
-      var gap = now - lastWheelTime;
-      lastWheelTime = now;
-      if(animating) return;
-      // After a snap, ignore trackpad "momentum" until the wheel goes quiet
-      if(needQuiet){
-        if(gap > 120){ needQuiet = false; } else { return; }
-      }
-      if(Math.abs(e.deltaY) < MIN_WHEEL) return;
-      goTo(current + (e.deltaY > 0 ? 1 : -1));
-    }, { passive: false });
-
-    // Touch swipe
-    window.addEventListener('touchstart', function(e){
-      touchStartY = e.touches[0].clientY;
-    }, { passive: true });
-    window.addEventListener('touchmove', function(e){
-      e.preventDefault(); // we drive the scrolling ourselves
-      if(touchStartY === null || animating) return;
-      var diff = touchStartY - e.touches[0].clientY;
-      if(Math.abs(diff) >= MIN_SWIPE){
-        touchStartY = null;
-        goTo(current + (diff > 0 ? 1 : -1));
-      }
-    }, { passive: false });
-    window.addEventListener('touchend', function(){ touchStartY = null; }, { passive: true });
-
-    // Keyboard
-    window.addEventListener('keydown', function(e){
-      var k = e.key, dir = 0;
-      if(k === 'ArrowDown' || k === 'PageDown') dir = 1;
-      else if(k === 'ArrowUp' || k === 'PageUp') dir = -1;
-      else if(k === 'Home'){ e.preventDefault(); if(!animating) goTo(0); return; }
-      else if(k === 'End'){ e.preventDefault(); if(!animating) goTo(pages.length - 1); return; }
-      else return;
-      e.preventDefault();
-      if(!animating) goTo(current + dir);
-    });
-
-    // Safety net: if the page ever rests between two pages
-    // (scrollbar drag, etc.) the magnet pulls it to the nearest one.
-    window.addEventListener('scroll', function(){
-      if(animating) return;
-      clearTimeout(settleTimer);
-      settleTimer = setTimeout(function(){
-        if(animating) return;
-        var n = nearest();
-        if(Math.abs(window.pageYOffset - targetFor(n)) > 1) goTo(n);
-        else current = n;
-      }, 140);
-    }, { passive: true });
-
-    // Keep perfectly fitted when the window is resized / phone rotated
-    window.addEventListener('resize', function(){
-      window.scrollTo(0, targetFor(current));
-    });
-
-    // Start on whichever page the browser restored
-    current = nearest();
-    window.scrollTo(0, targetFor(current));
-  })();
 </script>
 
 </body>

@@ -162,7 +162,6 @@
   #page-daily-ledger { background-image: linear-gradient(var(--bg-overlay), var(--paper)), url('daily_ledger.png'); }
   #page-selling-books { background-image: linear-gradient(var(--bg-overlay), var(--paper)), url('selling_book.png'); }
 
-  #page-wx-forensics { background-image: linear-gradient(var(--bg-overlay), var(--paper)), url('forensics.png'); }
   .page:nth-of-type(1) { z-index: 1; }
   .page:nth-of-type(2) { z-index: 2; }
   .page:nth-of-type(3) { z-index: 3; }
@@ -173,7 +172,6 @@
   .page:nth-of-type(8) { z-index: 8; }
   .page:nth-of-type(9) { z-index: 9; }
 
-  .page:nth-of-type(10) { z-index: 10; }
   .page-inner {
     display: flex;
     flex-direction: column;
@@ -367,7 +365,6 @@
 <div class="page-dots" aria-hidden="true">
   <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
   <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
-  <span class="dot"></span>
 </div>
 
 <div class="diary-stack">
@@ -607,32 +604,6 @@
           </svg>
         </span>
         <span class="label">SELLING BOOKS</span>
-        <span class="arrow" aria-hidden="true">&rarr;</span>
-      </button>
-      <svg class="ornament small" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <g stroke="var(--ink)" stroke-width="1.6" filter="url(#pencil2)">
-          <path d="M4,20 L36,20"/><path d="M12,6.5 L28,33.5"/><path d="M28,6.5 L12,33.5"/>
-        </g>
-        <circle cx="20" cy="20" r="1.6" fill="var(--circle-icon)" stroke="none"/>
-      </svg>
-    </div>
-  </section>
-
-  <!-- ============ PAGE 09 : WX-FORENSICS ============ -->
-  <section class="page project-page" id="page-wx-forensics">
-    <div class="page-inner">
-      <div class="page-kicker">PAGE 09</div>
-      <button class="proj-btn page-btn" type="button" data-url="wx-forensics.html" aria-label="Open WX-FORENSICS project">
-        <svg class="btn-outline" viewBox="0 0 430 92" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <polygon points="18,4 412,4 428,46 412,88 18,88 2,46" filter="url(#pencil1)"/>
-          <polygon points="14,8 416,7 424,46 416,85 14,84 6,46" filter="url(#pencil2)"/>
-        </svg>
-        <span class="icon-circle" aria-hidden="true">
-          <svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" filter="url(#pencil1)"/>
-            <text class="glyph" x="30" y="38" font-size="21" text-anchor="middle">W</text>
-          </svg>
-        </span>
-        <span class="label">WX-FORENSICS</span>
         <span class="arrow" aria-hidden="true">&rarr;</span>
       </button>
       <svg class="ornament small" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
